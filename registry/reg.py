@@ -965,3 +965,24 @@ class _Reg(object):
                 if to_json_list:
                     json_writer = get_json_writer(output)
                     write_list_to_json(to_json_list, json_writer)
+					
+    def __get_system_info(self):
+        """Extracts information about system information"""
+        self.logger.info("Extracting system information")
+        path = r"Software\Microsoft\Windows NT\CurrentVersion"
+        to_csv_list = [("COMPUTER_NAME", "TYPE", "LAST_WRITE_TIME", "HIVE", "KEY_PATH", "ATTR_NAME", "REG_TYPE", "ATTR_TYPE", "ATTR_DATA")]
+        self._generate_hklm_csv_list(to_csv_list, "system_info", path)
+        return to_csv_list
+
+    def csv_system_info(self):
+
+        with open(self.output_dir + "\\" + self.computer_name + "_system_info" + self.rand_ext, "wb") as output:
+            csv_writer = get_csv_writer(output)
+            write_list_to_csv(self.__get_system_info(), csv_writer)
+
+    def json_system_info(self):
+        self.logger.info("Extracting system information2")
+        if self.destination == 'local':
+            with open(os.path.join(self.output_dir,'%s_system_info.json' % self.computer_name), 'wb') as output:
+                json_writer = get_json_writer(output)
+                write_list_to_json(self.__get_system_info(), json_writer)
